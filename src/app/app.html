@@ -1,0 +1,117 @@
+<main class="container">
+  <section class="panel">
+    <h1>რეგისტრაცია</h1>
+    <p class="subtitle">შეავსე ინფორმაცია და შექმენი შენი ბარათი.</p>
+
+    <form #registrationForm="ngForm" (ngSubmit)="register()">
+      <label for="name">სახელი</label>
+      <input
+        id="name"
+        name="name"
+        type="text"
+        autocomplete="given-name"
+        placeholder="შეიყვანე სახელი"
+        [(ngModel)]="user.name"
+        required
+        pattern=".*\S.*"
+      />
+
+      <label for="lastName">გვარი</label>
+      <input
+        id="lastName"
+        name="lastName"
+        type="text"
+        autocomplete="family-name"
+        placeholder="შეიყვანე გვარი"
+        [(ngModel)]="user.lastName"
+        required
+        pattern=".*\S.*"
+      />
+
+      <label for="age">ასაკი</label>
+      <input
+        id="age"
+        name="age"
+        type="number"
+        placeholder="შეიყვანე ასაკი"
+        [(ngModel)]="user.age"
+        required
+        min="1"
+        max="120"
+        step="1"
+        pattern="[0-9]+"
+      />
+
+      <label for="email">ელფოსტა</label>
+      <input
+        id="email"
+        name="email"
+        type="email"
+        autocomplete="email"
+        placeholder="example@gmail.com"
+        [(ngModel)]="user.email"
+        required
+        email
+        #emailField="ngModel"
+      />
+
+      @if (emailField.invalid && emailField.touched) {
+        <p class="error">შეიყვანე სწორი ელფოსტა.</p>
+      }
+
+      <label for="image">პროფილის ფოტო</label>
+      <input
+        id="image"
+        type="file"
+        accept="image/jpeg,image/png,image/webp"
+        (change)="onImageChange($event)"
+        [disabled]="imageLoading"
+        aria-describedby="image-help"
+      />
+
+      <small id="image-help">JPG, PNG ან WEBP — მაქსიმუმ 5 MB.</small>
+
+      @if (imageError) {
+        <p class="error" role="alert">{{ imageError }}</p>
+      }
+
+      @if (imageLoading) {
+        <p role="status">ფოტო იტვირთება...</p>
+      }
+
+      <button
+        type="submit"
+        [disabled]="
+          registrationForm.invalid ||
+          !user.image ||
+          imageLoading
+        "
+      >
+        რეგისტრაცია
+      </button>
+    </form>
+  </section>
+
+  <section class="result" aria-live="polite">
+    @if (registeredUser; as person) {
+      <article class="user-card">
+        <img
+          [src]="person.image"
+          [alt]="person.name + ' ' + person.lastName"
+        />
+
+        <h2>{{ person.name }} {{ person.lastName }}</h2>
+
+        <p><strong>ასაკი:</strong> {{ person.age }}</p>
+        <p><strong>ელფოსტა:</strong> {{ person.email }}</p>
+
+        <span class="badge">რეგისტრაცია წარმატებით დასრულდა</span>
+      </article>
+    } @else {
+      <div class="empty-card">
+        <h2>შენი ბარათი</h2>
+        <p>ფორმის შევსების შემდეგ აქ შენი ინფორმაცია გამოჩნდება.</p>
+      </div>
+    }
+  </section>
+</main>
